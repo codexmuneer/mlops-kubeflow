@@ -1,0 +1,29 @@
+name: model_evaluation
+description: Evaluate trained model on test data
+implementation:
+  container:
+    image: python:3.9
+    command:
+    - python
+    - -c
+    args:
+    - '# model_evaluation implementation'
+inputs:
+- name: model_path
+  type: String
+  default: null
+- name: scaler_path
+  type: String
+  default: null
+- name: test_data_path
+  type: String
+  default: null
+- name: test_target_path
+  type: String
+  default: null
+- name: artifacts_dir
+  type: String
+  default: artifacts
+outputs:
+- name: output
+  type: str

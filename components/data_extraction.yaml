@@ -1,0 +1,20 @@
+name: data_extraction
+description: Extract/Load data from DVC-tracked source
+implementation:
+  container:
+    image: python:3.9
+    command:
+    - python
+    - -c
+    args:
+    - '# data_extraction implementation'
+inputs:
+- name: data_path
+  type: String
+  default: null
+- name: output_dir
+  type: String
+  default: data/processed
+outputs:
+- name: output
+  type: str

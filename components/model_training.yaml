@@ -1,0 +1,35 @@
+name: model_training
+description: Train ML model on preprocessed data
+implementation:
+  container:
+    image: python:3.9
+    command:
+    - python
+    - -c
+    args:
+    - '# model_training implementation'
+inputs:
+- name: train_data_path
+  type: String
+  default: null
+- name: train_target_path
+  type: String
+  default: null
+- name: models_dir
+  type: String
+  default: models
+- name: learning_rate
+  type: Float
+  default: '0.05'
+- name: max_depth
+  type: Integer
+  default: '2'
+- name: n_estimators
+  type: Integer
+  default: '100'
+- name: random_state
+  type: Integer
+  default: '30'
+outputs:
+- name: output
+  type: dict

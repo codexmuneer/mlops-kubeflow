@@ -1,0 +1,26 @@
+name: data_preprocessing
+description: Clean, preprocess, and prepare data
+implementation:
+  container:
+    image: python:3.9
+    command:
+    - python
+    - -c
+    args:
+    - '# data_preprocessing implementation'
+inputs:
+- name: input_data_path
+  type: String
+  default: null
+- name: output_dir
+  type: String
+  default: data/processed
+- name: test_size
+  type: Float
+  default: '0.2'
+- name: random_state
+  type: Integer
+  default: '42'
+outputs:
+- name: output
+  type: dict
