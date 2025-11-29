@@ -1,0 +1,43 @@
+# DVC cache
+.dvc/cache
+.dvc/tmp
+
+# MLflow artifacts and runs
+mlruns/
+.mlflow/
+
+# Data files (only track .dvc files)
+data/raw/*.csv
+data/processed/*.csv
+data/processed/*.pkl
+
+# Models
+models/*.pkl
+models/*.joblib
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Artifacts
+artifacts/
