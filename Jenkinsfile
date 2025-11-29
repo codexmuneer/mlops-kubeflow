@@ -17,12 +17,14 @@ pipeline {
                     // Checkout code
                     checkout scm
                     
-                    // Create virtual environment
+                    // Create virtual environment and install dependencies
                     sh '''
-                        python3 -m venv ${VENV_DIR}
-                        . ${VENV_DIR}/bin/activate
+                        python3 --version || python --version
+                        python3 -m venv ${VENV_DIR} || python -m venv ${VENV_DIR}
+                        source ${VENV_DIR}/bin/activate || . ${VENV_DIR}/Scripts/activate
                         pip install --upgrade pip
                         pip install -r requirements.txt
+                        echo "✓ Environment setup completed"
                     '''
                 }
             }
@@ -36,13 +38,15 @@ pipeline {
                 
                 script {
                     sh '''
-                        . ${VENV_DIR}/bin/activate
+                        source ${VENV_DIR}/bin/activate || . ${VENV_DIR}/Scripts/activate
                         
                         # Compile MLflow components to YAML (Kubeflow alternative)
-                        python3 compile_components.py
+                        echo "Compiling components..."
+                        python3 compile_components.py || python compile_components.py
                         
                         # Compile MLflow pipeline definition
-                        python3 pipeline.py compile
+                        echo "Compiling pipeline..."
+                        python3 pipeline.py compile || python pipeline.py compile
                         
                         # Verify pipeline.yaml exists
                         if [ -f pipeline.yaml ]; then
@@ -74,10 +78,11 @@ pipeline {
                 
                 script {
                     sh '''
-                        . ${VENV_DIR}/bin/activate
+                        source ${VENV_DIR}/bin/activate || . ${VENV_DIR}/Scripts/activate
                         
                         # Check if all Python files are syntactically correct
-                        python3 -m py_compile src/*.py pipeline.py compile_components.py
+                        python3 -m py_compile src/*.py pipeline.py compile_components.py || \
+                        python -m py_compile src/*.py pipeline.py compile_components.py
                         echo "✓ All Python files compiled successfully"
                     '''
                 }
@@ -95,8 +100,8 @@ pipeline {
             archiveArtifacts artifacts: 'pipeline.yaml', allowEmptyArchive: true
             archiveArtifacts artifacts: 'components/**/*.yaml', allowEmptyArchive: true
             
-            // Clean up
-            cleanWs()
+            // Clean up (optional - comment out if you want to keep workspace)
+            // cleanWs()
         }
         
         success {

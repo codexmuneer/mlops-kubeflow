@@ -17,50 +17,73 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
     
-    - name: Install dependencies
+    # ========================================
+    # Stage 1: Environment Setup
+    # ========================================
+    - name: Stage 1 - Environment Setup
       run: |
+        echo "================================="
+        echo "Stage 1: Environment Setup"
+        echo "================================="
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        echo "✓ Environment setup completed"
     
-    - name: Validate Python syntax
+    # ========================================
+    # Stage 2: Pipeline Compilation
+    # ========================================
+    - name: Stage 2 - Pipeline Compilation
       run: |
-        python -m py_compile src/*.py pipeline.py compile_components.py
-        echo "✓ All Python files compiled successfully"
-    
-    - name: Compile MLflow Components
-      run: |
+        echo "================================="
+        echo "Stage 2: Pipeline Compilation"
+        echo "================================="
+        
+        # Compile MLflow components to YAML (Kubeflow alternative)
         python compile_components.py
         echo "✓ Components compiled"
-    
-    - name: Compile MLflow Pipeline
-      run: |
+        
+        # Compile MLflow pipeline definition
         python pipeline.py compile
         echo "✓ Pipeline compiled"
-    
-    - name: Verify Pipeline Artifacts
-      run: |
+        
+        # Verify pipeline.yaml exists
         if [ ! -f pipeline.yaml ]; then
           echo "✗ ERROR: pipeline.yaml not found!"
           exit 1
         fi
+        
+        # Verify component YAML files exist
         if [ ! -d components ] || [ -z "$(ls -A components/*.yaml 2>/dev/null)" ]; then
           echo "✗ ERROR: Component YAML files not found!"
           exit 1
         fi
+        
         echo "✓ All artifacts verified"
         ls -lh pipeline.yaml
         ls -lh components/*.yaml
     
+    # ========================================
+    # Stage 3: Code Quality & Testing
+    # ========================================
+    - name: Stage 3 - Code Quality & Testing
+      run: |
+        echo "================================="
+        echo "Stage 3: Code Quality & Testing"
+        echo "================================="
+        python -m py_compile src/*.py pipeline.py compile_components.py
+        echo "✓ All Python files compiled successfully"
+    
+    # Archive artifacts
     - name: Upload pipeline artifacts
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: mlflow-pipeline
         path: |
